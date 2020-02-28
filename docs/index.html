@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Minimal color picker</title>
+	<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Wendy+One|Roboto&display=swap" rel="stylesheet">
+	<style>
+		html, body { margin: 0; min-height: 100vh; }
+		body {
+			display: flex;
+			flex-direction: column;
+			background-color: #EEE;
+			box-sizing: border-box;
+			font-family: Roboto, sans-serif;
+			line-height: 160%;
+		}
+		*, *:before, *:after { box-sizing: inherit; }
+		.block { display: block; }
+		input[type=color] {
+			padding: 0;
+		}
+		header, footer {
+			background-image: linear-gradient(30deg, #ffd89b, #19547b);
+			padding: 2vw 0;
+			text-align: center;
+			color: white;
+		}
+		header .subtitle {
+			margin: 0;
+			font-family: monospace;
+			font-size: 1rem;
+		}
+		main { flex: 1 1 auto; }
+		h1 {
+			font-size: 4vw;
+			line-height: 4vw;
+			font-family: "Wendy One", sans-serif;
+			margin: 0;
+			text-shadow: 0 0.5rem 1rem rgba(0,0,0,0.4),0 0.125rem 0.25rem rgba(0,0,0,0.2);
+		}
+		.content {
+			max-width: 34rem;
+			margin: 0 auto;
+			padding: 0.5rem;
+		}
+		/*p.first {
+			font-size: 1.125rem;
+		}
+		p {
+			margin: 1rem auto;
+		}
+		
+		code, pre {
+			background-color: #dde2df;
+		}
+		code {
+			margin: 0 0.25rem;
+			padding: 0 0.25rem;
+			box-shadow: 0 0 0 0.25rem #E7ECE9;
+			font-family: monospace;
+		}
+		pre {
+			padding: 0.25rem;
+			box-shadow: 0.0625rem 0.125rem 0.5rem rgba(0,0,0,0.1) inset;
+			border-radius: 0.125rem;
+		}
+		pre code {
+			box-shadow: none;
+			background-color: transparent;
+			font-size: 1.125rem;
+		}
+		
+		fieldset {
+			border: 0;
+			border-radius: 0.25rem;
+			box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.3);
+			margin: 0 0 2rem;
+		}*/
+		input[type=color] {
+			width: 2rem;
+			height: 1.5rem;
+			margin: 0;
+			padding: 0;
+			border: 0;
+			vertical-align: bottom;
+			-webkit-appearance: none;
+		}
+		footer {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 2rem;
+			padding: 0.125rem 2rem;
+			font-size: 0.75rem;
+			overflow: hidden;
+		}
+		footer a {
+			color: inherit;
+			text-decoration: none;
+		}
+		.love {
+			display: inline-block;
+			padding-left: 2px;
+			color: #f04;
+			-webkit-animation-duration: 861ms;
+			animation-duration: 861ms;
+			-webkit-animation-name: heartbeat;
+			animation-name: heartbeat;
+			-webkit-animation-iteration-count: infinite;
+			animation-iteration-count: infinite;
+		}
+		@-webkit-keyframes heartbeat {
+		 0% {
+			-webkit-transform:scale(1);
+			transform:scale(1)
+		 }
+		 to {
+			-webkit-transform:scale(1.4);
+			transform:scale(1.4)
+		 }
+		}
+		@keyframes heartbeat {
+		 0% {
+			-webkit-transform:scale(1);
+			transform:scale(1)
+		 }
+		 to {
+			-webkit-transform:scale(1.4);
+			transform:scale(1.4)
+		 }
+		}
+		
+		body,html{height: 100%;margin:0;}
+		body {
+			display: flex;
+			flex-direction: column;
+		}
+
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>CSS2GIF</h1>
+		<p class="subtitle">or something</p>
+	</header>
+	<main>
+		<div class="content">
+			<input id="frames" type="number" value="32">
+			<div class="currentFrame"></div>
+			<input id="frame" step="1" min="0" max="32" type="range">
+			<input id="size" type="range">
+			<input id="color" type="color">
+			<button id="play">play</button>
+			<button id="renderframe">renderframe</button>
+			<button id="render">render</button>
+			<div class="panes">
+				<div class="pane"></div>
+				<!--<div class="pane"></div>-->
+			</div>
+		</div>
+	</main>
+	<footer>
+		<a href="https://ronvalstar.nl/">made with <span class="love">♥</span></a>
+		<a href="https://github.com/Sjeiti/clr">fork on Github</a>
+		<a href="https://raw.githubusercontent.com/Sjeiti/clr/master/LICENSE">MIT license</a>
+	</footer>
+
+	<script src="index.js"></script>
+</body>
+</html>
