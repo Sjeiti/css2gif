@@ -114,7 +114,7 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 
 
 // module
-exports.push([module.i, ":root {\n  --frame: 0;\n  --frames: 32;\n  --part: calc(var(--frame) / var(--frames));\n  --deg: calc(var(--part) * 360deg);\n  --size: 2rem;\n  --size2: calc(2*var(--size));\n  --size2sqrt: 5.66rem;\n  --size1sqrt: calc(0.5*var(--size2sqrt));\n  --size0sqrt: calc(0*var(--size2sqrt));\n}\n.panes {\n  display: flex;\n}\n.pane {\n  --deg: calc(var(--frame)/var(--frames)*180deg);\n  flex: 0 0 auto;\n  width: calc(8*var(--size2));\n  height: calc(8*var(--size2));\n  background-image: repeating-linear-gradient(calc(var(--deg) + 90deg), transparent 0 var(--size), black 0 var(--size2)), repeating-linear-gradient(calc(var(--deg) - 45deg), transparent 0 var(--size0sqrt), royalblue 0 calc(var(--size0sqrt) + var(--size1sqrt)), transparent 0 var(--size2sqrt)), repeating-linear-gradient(var(--deg), black 0 var(--size), powderblue 0 var(--size2));\n}\n.currentFrame:before {\n  counter-reset: variable var(--frame);\n  content: counter(variable);\n}\n", ""]);
+exports.push([module.i, ":root {\n  --frame: 0;\n  --frames: 32;\n  --part: calc(var(--frame) / var(--frames));\n  --deg: calc(var(--part) * 360deg);\n  --size: 2rem;\n  --size2: calc(2*var(--size));\n  --size2sqrt: 5.66rem;\n  --size1sqrt: calc(0.5*var(--size2sqrt));\n  --size0sqrt: calc(0*var(--size2sqrt));\n}\n.panes {\n  display: flex;\n}\n.pane {\n  flex: 0 0 auto;\n  width: calc(8*var(--size2));\n  height: calc(8*var(--size2));\n  cbackground-image: repeating-linear-gradient(calc(var(--deg) + 90deg), transparent 0 var(--size), black 0 var(--size2)), repeating-linear-gradient(calc(var(--deg) - 45deg), transparent 0 var(--size0sqrt), royalblue 0 calc(var(--size0sqrt) + var(--size1sqrt)), transparent 0 var(--size2sqrt)), repeating-linear-gradient(var(--deg), black 0 var(--size), powderblue 0 var(--size2));\n}\n.currentFrame:before {\n  counter-reset: variable var(--frame);\n  content: counter(variable);\n}\n", ""]);
 
 // exports
 
@@ -749,15 +749,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var _document = document,
-    body = _document.body;
-var elm = document.querySelector.bind(document); // const rootRule = createStyleSheetRule()
-
+    head = _document.head,
+    body = _document.body,
+    styleSheets = _document.styleSheets;
+var elm = document.querySelector.bind(document);
 var rootRule = getRules(':root').pop(); //
 
 var ANIMATION = 'animation'; //
 
 var rootRules = getRules(':root');
-var paneRule = getRules('.pane').pop();
+var paneRule = getRules('.pane').pop(); // const paneRuleCustom = createStyleSheetRule()
+// console.log('paneRuleCustom',paneRuleCustom) // todo: remove log
+
+var customSheet = createStyleSheet();
+console.log('customSheet', customSheet); // todo: remove log
+
 var elmContent = elm('.content');
 var elmFrame = elm('#frame');
 var elmPane = elm('.pane');
@@ -766,8 +772,7 @@ var ctx = canvas.getContext('2d');
 var tempImg = document.createElement('img');
 tempImg.addEventListener('load', onTempImageLoad);
 tempImg.src = getForeignObject();
-var targetImg = document.createElement('img'); // elmContent.appendChild(targetImg)
-
+var targetImg = document.createElement('img');
 var sequence = []; //
 
 var inputEvent = new CustomEvent('input');
@@ -784,6 +789,9 @@ elmFrame.addEventListener('input', onInputFrame);
 var elmSize = elm('#size');
 elmSize.addEventListener('input', onInputSize);
 elmSize.dispatchEvent(inputEvent);
+var elmTextarea = elm('textarea');
+elmTextarea.addEventListener('input', onInputTextarea);
+elmTextarea.dispatchEvent(inputEvent);
 elm('#play').addEventListener('click', onPlayClick);
 elm('#renderframe').addEventListener('click', onRenderFrameClick);
 elm('#render').addEventListener('click', onRenderClick); //
@@ -814,6 +822,14 @@ function onInputFramesNum() {
   elmFrame.setAttribute('max', frames);
 }
 
+function onInputTextarea(_ref3) {
+  var value = _ref3.target.value;
+  customSheet.innerHTML = ".pane{\n  ".concat(value, "\n}");
+  console.log('customSheet', customSheet); // todo: remove log
+  // paneRuleCustom.cssText = `.pane{${target.innerText}}`
+  // console.log('paneRuleCustom',paneRuleCustom) // todo: remove log
+}
+
 function onPlayClick() {
   animate(frames);
 }
@@ -828,7 +844,13 @@ function onRenderClick() {
     tempImg.src = getForeignObject(canvas.width);
   }, function () {
     var size = canvas.width;
-    var ag = new animated_gif_dist_Animated_GIF_min__WEBPACK_IMPORTED_MODULE_1___default.a();
+    var ag = new animated_gif_dist_Animated_GIF_min__WEBPACK_IMPORTED_MODULE_1___default.a({
+      palette: [0xFF0000, 0x0000FF, 0x00FF00, 0x000000] // doesn't work?
+
+    });
+    console.log('ag', ag); // todo: remove log
+    // ag.onRenderProgress(cb)
+
     ag.setSize(size, size);
     ag.setDelay(40);
     sequence.forEach(ag.addFrame.bind(ag));
@@ -858,12 +880,25 @@ function animate(frame, step, done) {
   frame !== 0 && requestAnimationFrame(animate.bind(null, frame - 1, step, done)) || done && done();
 }
 
-function createStyleSheetRule() {
-  body.appendChild(document.createElement('style'));
-  var sheet = document.styleSheets[document.styleSheets.length - 1];
-  sheet.insertRule(':root {}', 0);
-  return sheet.rules[0];
-}
+function createStyleSheet() {
+  var sheet = document.createElement('style');
+  sheet.setAttribute('type', 'text/css');
+  head.appendChild(sheet);
+  console.log('createStyleSheet', sheet); // todo: remove log
+
+  return sheet;
+} // function createStyleSheetRule(){
+// 	// // body.appendChild(document.createElement('style'))
+//   // console.log('paneRule',paneRule) // todo: remove log
+// 	// const sheet = paneRule.parentStyleSheet//document.styleSheets[document.styleSheets.length-1]
+// 	// sheet.insertRule('.asdfqwerfoo {}', sheet.rules.length)
+// 	// return sheet.rules[sheet.rules.length-1]
+// 	body.appendChild(document.createElement('style'))
+// 	const sheet = document.styleSheets[document.styleSheets.length-1]
+// 	sheet.insertRule('x {}', 0)
+// 	return sheet.rules[0]
+// }
+
 
 function setCanvasSize(size) {
   canvas.width = canvas.height = size;
@@ -872,7 +907,7 @@ function setCanvasSize(size) {
 function getForeignObject(size) {
   return 'data:image/svg+xml,' + encodeURIComponent("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"".concat(size, "\" height=\"").concat(size, "\">\n\t<foreignObject width=\"100%\" height=\"100%\">\n\t<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t<style>\n\t\t\t").concat(rootRules.reduce(function (acc, rule) {
     return acc + rule.cssText;
-  }, ''), "\n\t\t\t").concat(paneRule.cssText, "\n\t\t</style>\n\t\t<div class=\"pane\"></div>\n\t</div>\n\t</foreignObject></svg>"));
+  }, ''), "\n\t\t\t").concat(paneRule.cssText, "\n\t\t\t").concat(customSheet.innerHTML, "\n\t\t</style>\n\t\t<div class=\"pane\"></div>\n\t</div>\n\t</foreignObject></svg>"));
 }
 /**
  * Traverse styleSheets in search of selector

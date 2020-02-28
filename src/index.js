@@ -4,9 +4,8 @@ import Animated_GIF from 'animated_gif/dist/Animated_GIF.min'
 import './styles.less'
 
 
-const {body} = document
+const {head, body, styleSheets} = document
 const elm = document.querySelector.bind(document)
-// const rootRule = createStyleSheetRule()
 const rootRule = getRules(':root').pop()
 
 //
@@ -15,6 +14,11 @@ const ANIMATION = 'animation'
 
 const rootRules = getRules(':root')
 const paneRule = getRules('.pane').pop()
+
+// const paneRuleCustom = createStyleSheetRule()
+// console.log('paneRuleCustom',paneRuleCustom) // todo: remove log
+const customSheet = createStyleSheet()
+console.log('customSheet',customSheet) // todo: remove log
 
 const elmContent = elm('.content')
 const elmFrame = elm('#frame')
@@ -28,7 +32,6 @@ tempImg.addEventListener('load', onTempImageLoad)
 tempImg.src = getForeignObject()
 
 const targetImg = document.createElement('img')
-// elmContent.appendChild(targetImg)
 
 const sequence = []
 
@@ -47,6 +50,9 @@ const elmSize = elm('#size')
 elmSize.addEventListener('input', onInputSize)
 elmSize.dispatchEvent(inputEvent)
 
+const elmTextarea = elm('textarea')
+elmTextarea.addEventListener('input', onInputTextarea)
+elmTextarea.dispatchEvent(inputEvent)
 
 elm('#play').addEventListener('click', onPlayClick)
 elm('#renderframe').addEventListener('click', onRenderFrameClick)
@@ -78,6 +84,15 @@ function onInputFramesNum(){
   elmFrame.setAttribute('max', frames)
 }
 
+function onInputTextarea({target:{value}}){
+  customSheet.innerHTML = `.pane{
+  ${value}
+}`
+	console.log('customSheet',customSheet) // todo: remove log
+  // paneRuleCustom.cssText = `.pane{${target.innerText}}`
+  // console.log('paneRuleCustom',paneRuleCustom) // todo: remove log
+}
+
 function onPlayClick(){
 	animate(frames)
 }
@@ -93,7 +108,11 @@ function onRenderClick(){
 	}, ()=>{
 		const size = canvas.width
 
-		const ag = new Animated_GIF()
+		const ag = new Animated_GIF({
+      palette: [0xFF0000,0x0000FF,0x00FF00,0x000000] // doesn't work?
+    })
+    console.log('ag',ag) // todo: remove log
+    // ag.onRenderProgress(cb)
 		ag.setSize(size, size)
 		ag.setDelay(40)
 		sequence.forEach(ag.addFrame.bind(ag))
@@ -124,12 +143,25 @@ function animate(frame, step, done) {
 	frame!==0&&requestAnimationFrame(animate.bind(null,frame-1,step,done))||done&&done()
 }
 
-function createStyleSheetRule(){
-	body.appendChild(document.createElement('style'))
-	const sheet = document.styleSheets[document.styleSheets.length-1]
-	sheet.insertRule(':root {}', 0)
-	return sheet.rules[0]
+function createStyleSheet(){
+	const sheet = document.createElement('style')
+	sheet.setAttribute('type','text/css')
+	head.appendChild(sheet)
+	console.log('createStyleSheet',sheet) // todo: remove log
+	return sheet
 }
+
+// function createStyleSheetRule(){
+// 	// // body.appendChild(document.createElement('style'))
+//   // console.log('paneRule',paneRule) // todo: remove log
+// 	// const sheet = paneRule.parentStyleSheet//document.styleSheets[document.styleSheets.length-1]
+// 	// sheet.insertRule('.asdfqwerfoo {}', sheet.rules.length)
+// 	// return sheet.rules[sheet.rules.length-1]
+// 	body.appendChild(document.createElement('style'))
+// 	const sheet = document.styleSheets[document.styleSheets.length-1]
+// 	sheet.insertRule('x {}', 0)
+// 	return sheet.rules[0]
+// }
 
 function setCanvasSize(size) {
 	canvas.width = canvas.height = size
@@ -142,6 +174,7 @@ function getForeignObject(size){
 		<style>
 			${rootRules.reduce((acc,rule)=>acc+rule.cssText,'')}
 			${paneRule.cssText}
+			${customSheet.innerHTML}
 		</style>
 		<div class="pane"></div>
 	</div>

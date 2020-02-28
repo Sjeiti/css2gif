@@ -13,11 +13,11 @@
   display: flex;
 }
 .pane {
-  --deg: calc(var(--frame)/var(--frames)*180deg);
+  //--deg: calc(var(--frame)/var(--frames)*360deg);
   flex: 0 0 auto;
   width: calc(8*var(--size2));
   height: calc(8*var(--size2));
-  background-image:
+  cbackground-image:
     repeating-linear-gradient(calc(var(--deg) + 90deg), transparent 0 var(--size), black 0 var(--size2)),
     repeating-linear-gradient(calc(var(--deg) - 45deg), transparent 0 var(--size0sqrt), royalblue 0 calc(var(--size0sqrt) + var(--size1sqrt)), transparent 0 var(--size2sqrt)),
     repeating-linear-gradient(var(--deg), black 0 var(--size), powderblue 0 var(--size2));

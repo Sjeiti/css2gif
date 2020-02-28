@@ -45,6 +45,10 @@
 			margin: 0 auto;
 			padding: 0.5rem;
 		}
+		.form {
+			display: flex;
+			flex-direction: column;
+		}
 		/*p.first {
 			font-size: 1.125rem;
 		}
@@ -86,6 +90,10 @@
 			border: 0;
 			vertical-align: bottom;
 			-webkit-appearance: none;
+		}
+		textarea {
+			overflow: scroll;
+			white-space: pre;
 		}
 		footer {
 			display: flex;
@@ -147,14 +155,23 @@
 	</header>
 	<main>
 		<div class="content">
-			<input id="frames" type="number" value="32">
-			<div class="currentFrame"></div>
-			<input id="frame" step="1" min="0" max="32" type="range">
-			<input id="size" type="range">
-			<input id="color" type="color">
-			<button id="play">play</button>
-			<button id="renderframe">renderframe</button>
-			<button id="render">render</button>
+			<div class="form">
+				<input id="frames" type="number" value="32">
+				<div class="currentFrame"></div>
+				<input id="frame" step="1" min="0" max="32" type="range">
+				<input id="size" type="range">
+				<input id="color" type="color">
+				<textarea id="css" cols="30" rows="10">
+background-image:
+  repeating-linear-gradient(calc(var(--deg) + 90deg), transparent 0 var(--size), black 0 var(--size2)),
+  repeating-linear-gradient(calc(var(--deg) - 45deg), transparent 0 var(--size0sqrt), royalblue 0 calc(var(--size0sqrt) + var(--size1sqrt)), transparent 0 var(--size2sqrt)),
+  repeating-linear-gradient(var(--deg), black 0 var(--size), powderblue 0 var(--size2));
+box-shadow: 0 0 1rem red inset;
+				</textarea>
+				<button id="play">play</button>
+				<button id="renderframe">renderframe</button>
+				<button id="render">render</button>
+			</div>
 			<div class="panes">
 				<div class="pane"></div>
 				<!--<div class="pane"></div>-->
